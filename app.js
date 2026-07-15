@@ -118,7 +118,7 @@ function drawAtlas(data, phases) {
 function drawRiver(data) {
 
     const line = d3.line()
-        .curve(d3.curveCatmullRom.alpha(0.7))
+.curve(d3.curveBasis)
         .x(d => d.x)
         .y(d => d.y);
 
