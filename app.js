@@ -87,7 +87,8 @@ function prepareData(data) {
   // groupes de phases
 
   const phases = d3.group(data, d => d.phase);
-
+console.log(data);
+console.log(phases);
   drawAtlas(data, phases);
 
 }
