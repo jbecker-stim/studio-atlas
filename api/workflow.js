@@ -12,7 +12,7 @@ export default async function handler(req, res) {
       id: page.id,
       name: page.properties["Étape"]?.title?.[0]?.plain_text ?? "",
       order: page.properties["Ordre"]?.number ?? 0,
-      phase: page.properties["Phase macro"]?.select?.name ?? "",
+phase: page.properties["Phase macro"]?.multi_select?.[0]?.name ?? "",
     }))
     .sort((a, b) => a.order - b.order);
 
