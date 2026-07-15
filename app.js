@@ -177,3 +177,68 @@ function drawPhases(phases) {
     });
 
 }
+// ======================================
+// BLOC C
+// Îlots
+// ======================================
+
+function hexagonPath(radius) {
+
+    const pts = [];
+
+    for (let i = 0; i < 6; i++) {
+
+        const angle = (Math.PI / 3) * i - Math.PI / 6;
+
+        pts.push([
+            Math.cos(angle) * radius,
+            Math.sin(angle) * radius
+        ]);
+
+    }
+
+    return d3.line()(pts) + "Z";
+
+}
+
+function drawIslands(data) {
+
+    const islands = islandLayer
+        .selectAll("g")
+        .data(data)
+        .enter()
+        .append("g")
+        .attr("transform", d => `translate(${d.x},${d.y})`);
+
+    // Halo
+
+    islands
+        .append("circle")
+        .attr("r", 26)
+        .attr("fill", "#4B7BFF")
+        .attr("opacity", 0.10);
+
+    // Hexagone
+
+    islands
+        .append("path")
+        .attr("d", hexagonPath(18))
+        .attr("fill", "#F5F5F5")
+        .attr("stroke", "#6A8DFF")
+        .attr("stroke-width", 1.5);
+
+    // Label
+
+    labelLayer
+        .selectAll("text")
+        .data(data)
+        .enter()
+        .append("text")
+        .attr("x", d => d.x)
+        .attr("y", d => d.y + 42)
+        .attr("text-anchor", "middle")
+        .attr("fill", "#CFCFCF")
+        .attr("font-size", 12)
+        .text(d => d.name);
+
+}
