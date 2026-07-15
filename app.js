@@ -77,10 +77,10 @@ function prepareData(data) {
     .range([MARGIN_X, width - MARGIN_X]);
 
   data.forEach((step, index) => {
+step.x = scale(index);
 
-    step.x = scale(index);
-
-    step.y = MARGIN_Y;
+// Léger flottement vertical
+step.y = MARGIN_Y + (Math.random() - 0.5) * 36;
 
   });
 
