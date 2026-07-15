@@ -111,6 +111,8 @@ function drawAtlas(data, phases) {
 
     drawRiver(data);
 
+    drawIslands(data);
+
 }
 
 function drawRiver(data) {
