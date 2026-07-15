@@ -99,3 +99,78 @@ function drawAtlas(data, phases) {
   // sera complétée au Bloc B
 
 }
+// ======================================
+// BLOC B
+// Dessin des phases et de la rivière
+// ======================================
+
+function drawAtlas(data, phases) {
+
+    drawPhases(phases);
+
+    drawRiver(data);
+
+}
+
+function drawRiver(data) {
+
+    const line = d3.line()
+        .curve(d3.curveCatmullRom.alpha(0.7))
+        .x(d => d.x)
+        .y(d => d.y);
+
+    riverLayer
+        .append("path")
+        .datum(data)
+        .attr("d", line)
+        .attr("fill", "none")
+        .attr("stroke", COLORS.river)
+        .attr("stroke-width", 4)
+        .attr("opacity", .45);
+
+}
+
+function drawPhases(phases) {
+
+    let index = 0;
+
+    phases.forEach((steps, phaseName) => {
+
+        const first = steps[0];
+        const last = steps[steps.length - 1];
+
+        const padding = 90;
+
+        const x = first.x - padding;
+
+        const w = (last.x - first.x) + padding * 2;
+
+        const y = MARGIN_Y - 110;
+
+        const h = 220;
+
+        const group = phaseLayer.append("g");
+
+        group.append("rect")
+            .attr("x", x)
+            .attr("y", y)
+            .attr("width", w)
+            .attr("height", h)
+            .attr("rx", 40)
+            .attr("fill", "#181818")
+            .attr("stroke", "#252525")
+            .attr("stroke-width", 1);
+
+        group.append("text")
+            .attr("x", x + 24)
+            .attr("y", y + 34)
+            .attr("fill", "#777")
+            .attr("font-size", 13)
+            .attr("font-weight", 600)
+            .text(phaseName);
+
+        index++;
+
+    });
+
+}
