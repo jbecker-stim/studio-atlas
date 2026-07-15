@@ -1,57 +1,101 @@
+// ======================================
+// STUDIO ATLAS — V1
+// Bloc A : Initialisation
+// ======================================
+
+// ---------- Canvas ----------
+
 const svg = d3.select("#atlas");
 
 const width = window.innerWidth;
 const height = window.innerHeight;
 
 svg
-    .attr("viewBox", `0 0 ${width} ${height}`);
+  .attr("viewBox", `0 0 ${width} ${height}`)
+  .attr("preserveAspectRatio", "xMidYMid meet");
 
-fetch("/api/workflow")
-    .then(r => r.json())
-    .then(data => {
+// ---------- Groupe principal ----------
 
-        data.sort((a, b) => a.order - b.order);
+const scene = svg.append("g").attr("class", "scene");
 
-        const g = svg.append("g");
+// ---------- Zoom ----------
 
-        const xStart = 120;
-        const xEnd = width - 120;
+const zoom = d3.zoom()
+  .scaleExtent([0.6, 3])
+  .on("zoom", (event) => {
+    scene.attr("transform", event.transform);
+  });
 
-        const y = height / 2;
+svg.call(zoom);
 
-        // rivière
+// ---------- Constantes graphiques ----------
 
-        g.append("line")
-            .attr("x1", xStart)
-            .attr("x2", xEnd)
-            .attr("y1", y)
-            .attr("y2", y)
-            .attr("stroke", "#2b5cff")
-            .attr("stroke-width", 4)
-            .attr("opacity", .35);
+const MARGIN_X = 180;
+const MARGIN_Y = height / 2;
 
-        const scale = d3.scaleLinear()
-            .domain([1, data.length])
-            .range([xStart, xEnd]);
+const COLORS = {
+  river: "#4B7BFF",
+  island: "#FFFFFF",
+  label: "#D8D8D8",
+  phase: "#1A1A1A"
+};
 
-        g.selectAll("circle")
-            .data(data)
-            .enter()
-            .append("circle")
-            .attr("cx", (d, i) => scale(i + 1))
-            .attr("cy", y)
-            .attr("r", 18)
-            .attr("fill", "#ffffff");
+// ---------- Groupes de dessin ----------
 
-        g.selectAll("text")
-            .data(data)
-            .enter()
-            .append("text")
-            .attr("x", (d, i) => scale(i + 1))
-            .attr("y", y + 42)
-            .attr("text-anchor", "middle")
-            .attr("fill", "#cccccc")
-            .attr("font-size", 13)
-            .text(d => d.name);
+const phaseLayer = scene.append("g").attr("id", "phases");
 
-    });
+const riverLayer = scene.append("g").attr("id", "river");
+
+const islandLayer = scene.append("g").attr("id", "islands");
+
+const labelLayer = scene.append("g").attr("id", "labels");
+
+// ---------- Chargement des données ----------
+
+async function loadWorkflow() {
+
+  const response = await fetch("/api/workflow");
+
+  const workflow = await response.json();
+
+  workflow.sort((a, b) => a.order - b.order);
+
+  prepareData(workflow);
+
+}
+
+loadWorkflow();
+
+// ---------- Préparation ----------
+
+function prepareData(data) {
+
+  // position horizontale
+
+  const scale = d3.scaleLinear()
+    .domain([0, data.length - 1])
+    .range([MARGIN_X, width - MARGIN_X]);
+
+  data.forEach((step, index) => {
+
+    step.x = scale(index);
+
+    step.y = MARGIN_Y;
+
+  });
+
+  // groupes de phases
+
+  const phases = d3.group(data, d => d.phase);
+
+  drawAtlas(data, phases);
+
+}
+
+// ---------- Fonction principale ----------
+
+function drawAtlas(data, phases) {
+
+  // sera complétée au Bloc B
+
+}
