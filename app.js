@@ -214,9 +214,9 @@ function drawIslands(data) {
 
     islands
         .append("circle")
-        .attr("r", 26)
+        .attr("r", 34)
         .attr("fill", "#4B7BFF")
-        .attr("opacity", 0.10);
+        .attr("opacity", 0.18);
 
     // Hexagone
 
@@ -238,7 +238,8 @@ function drawIslands(data) {
         .attr("y", d => d.y + 42)
         .attr("text-anchor", "middle")
         .attr("fill", "#CFCFCF")
-        .attr("font-size", 12)
+       .attr("font-size", 13)
+.attr("font-weight", 500)
         .text(d => d.name);
 
 }
