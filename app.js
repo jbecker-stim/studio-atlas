@@ -55,6 +55,9 @@ const riverLayer = scene.append("g").attr("id", "river");
 const islandLayer = scene.append("g").attr("id", "islands");
 
 const labelLayer = scene.append("g").attr("id", "labels");
+// ---------- État ----------
+
+let selectedStep = null;
 
 // ---------- Chargement des données ----------
 
