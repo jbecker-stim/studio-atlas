@@ -213,7 +213,7 @@ function hexagonPath(radius) {
 function drawIslands(data) {
 
     const islands = islandLayer
-        .selectAll("g")
+        .selectAll(".island")
         .data(data)
         .enter()
         .append("g")
@@ -237,7 +237,9 @@ function drawIslands(data) {
     .attr("stroke-width", 1.5)
     .on("click", (event, d) => {
 
-        focusStep(d);
+    selectStep(d);
+
+});
 
 
 });
@@ -279,5 +281,48 @@ function focusStep(step) {
                 .translate(tx, ty)
                 .scale(scale)
         );
+
+}
+// ======================================
+// FEATURE 002
+// Selection
+// ======================================
+
+function selectStep(step) {
+
+    selectedStep = step;
+
+    focusStep(step);
+
+    updateSelection();
+
+}
+function updateSelection() {
+
+    islandLayer
+        .selectAll(".island")
+        .transition()
+        .duration(250)
+        .style("opacity", d => {
+
+            if (!selectedStep) return 1;
+
+            return d.id === selectedStep.id ? 1 : 0.25;
+
+        });
+
+    islandLayer
+        .selectAll(".island path")
+        .transition()
+        .duration(250)
+        .attr("transform", d => {
+
+            if (!selectedStep) return "scale(1)";
+
+            return d.id === selectedStep.id
+                ? "scale(1.25)"
+                : "scale(1)";
+
+        });
 
 }
