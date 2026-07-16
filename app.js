@@ -241,9 +241,6 @@ function drawIslands(data) {
 
 });
 
-
-});
-
     // Label
 
     labelLayer
