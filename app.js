@@ -20,20 +20,19 @@ const scene = svg.append("g").attr("class", "scene");
 
 // ---------- Zoom ----------
 
-const zoom = d3.zoom()
-    .scaleExtent([0.5, 4])
-    .on("zoom", (event) => {
-        scene.attr("transform", event.transform);
-    });
-
-svg.call(zoom);
-
-// état actuel de la caméra
 let currentTransform = d3.zoomIdentity;
 
-svg.on("zoom.camera", (event) => {
-    currentTransform = event.transform;
-});
+const zoom = d3.zoom()
+  .scaleExtent([0.5, 4])
+  .on("zoom", (event) => {
+
+      currentTransform = event.transform;
+
+      scene.attr("transform", currentTransform);
+
+  });
+
+svg.call(zoom);
 
 // ---------- Constantes graphiques ----------
 
