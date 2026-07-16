@@ -21,12 +21,19 @@ const scene = svg.append("g").attr("class", "scene");
 // ---------- Zoom ----------
 
 const zoom = d3.zoom()
-  .scaleExtent([0.6, 3])
-  .on("zoom", (event) => {
-    scene.attr("transform", event.transform);
-  });
+    .scaleExtent([0.5, 4])
+    .on("zoom", (event) => {
+        scene.attr("transform", event.transform);
+    });
 
 svg.call(zoom);
+
+// état actuel de la caméra
+let currentTransform = d3.zoomIdentity;
+
+svg.on("zoom.camera", (event) => {
+    currentTransform = event.transform;
+});
 
 // ---------- Constantes graphiques ----------
 
@@ -221,11 +228,17 @@ function drawIslands(data) {
     // Hexagone
 
     islands
-        .append("path")
-        .attr("d", hexagonPath(18))
-        .attr("fill", "#F5F5F5")
-        .attr("stroke", "#6A8DFF")
-        .attr("stroke-width", 1.5);
+    .append("path")
+    .attr("d", hexagonPath(18))
+    .attr("fill", "#F5F5F5")
+    .attr("stroke", "#6A8DFF")
+    .attr("stroke-width", 1.5)
+    .on("click", (event, d) => {
+
+        focusStep(d);
+
+
+});
 
     // Label
 
@@ -241,5 +254,28 @@ function drawIslands(data) {
        .attr("font-size", 13)
 .attr("font-weight", 500)
         .text(d => d.name);
+
+}
+// ======================================
+// FEATURE 001
+// Atlas Camera
+// ======================================
+
+function focusStep(step) {
+
+    const scale = currentTransform.k || 1;
+
+    const tx = width / 2 - step.x * scale;
+
+    const ty = height / 2 - step.y * scale;
+
+    svg.transition()
+        .duration(900)
+        .call(
+            zoom.transform,
+            d3.zoomIdentity
+                .translate(tx, ty)
+                .scale(scale)
+        );
 
 }
