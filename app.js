@@ -301,9 +301,9 @@ function selectStep(step) {
 
     updateInspector(step);
 
-    const relatedInteractions = getInteractionsForStep(step.id);
+   const relatedInteractions = getInteractionsForStep(step.id);
 
-    console.log(relatedInteractions);
+updateInteractions(relatedInteractions);
 }
 
 function updateSelection() {
