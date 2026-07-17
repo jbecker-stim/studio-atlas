@@ -293,7 +293,10 @@ function selectStep(step) {
 
     updateSelection();
 
+    updateInspector(step);
+
 }
+
 function updateSelection() {
 
     islandLayer
@@ -321,5 +324,14 @@ function updateSelection() {
                 : "scale(1)";
 
         });
+
+}
+function updateInspector(step) {
+
+    document.getElementById("inspector-title").textContent = step.name;
+
+    document.getElementById("phase-value").textContent = step.phase;
+
+    document.getElementById("order-value").textContent = step.order;
 
 }
