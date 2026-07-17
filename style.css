@@ -67,3 +67,39 @@ body {
     margin-bottom: 6px;
 
 }
+
+#interaction-list{
+    margin-top:20px;
+}
+
+.interaction-card{
+
+    padding:12px;
+
+    margin-bottom:12px;
+
+    border-radius:12px;
+
+    background:#1a1a1a;
+
+    border:1px solid #2b2b2b;
+
+}
+
+.interaction-code{
+
+    color:#7EA6FF;
+
+    font-weight:700;
+
+    margin-bottom:6px;
+
+}
+
+.interaction-type{
+
+    color:#888;
+
+    font-size:12px;
+
+}
