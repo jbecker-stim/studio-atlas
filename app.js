@@ -2,7 +2,8 @@
 // STUDIO ATLAS — V1
 // Bloc A : Initialisation
 // ======================================
-
+let workflow = [];
+let interactions = [];
 // ---------- Canvas ----------
 
 const svg = d3.select("#atlas");
@@ -61,19 +62,24 @@ let selectedStep = null;
 
 // ---------- Chargement des données ----------
 
-async function loadWorkflow() {
+async function loadAtlas() {
 
-  const response = await fetch("/api/workflow");
+    const [workflowResponse, interactionsResponse] = await Promise.all([
+        fetch("/api/workflow"),
+        fetch("/api/interactions")
+    ]);
 
-  const workflow = await response.json();
+    workflow = await workflowResponse.json();
 
-  workflow.sort((a, b) => a.order - b.order);
+    interactions = await interactionsResponse.json();
 
-  prepareData(workflow);
+    workflow.sort((a, b) => a.order - b.order);
+
+    prepareData(workflow);
 
 }
 
-loadWorkflow();
+loadAtlas();
 
 // ---------- Préparation ----------
 
@@ -295,6 +301,9 @@ function selectStep(step) {
 
     updateInspector(step);
 
+    const relatedInteractions = getInteractionsForStep(step.id);
+
+    console.log(relatedInteractions);
 }
 
 function updateSelection() {
@@ -333,5 +342,10 @@ function updateInspector(step) {
     document.getElementById("phase-value").textContent = step.phase;
 
     document.getElementById("order-value").textContent = step.order;
+
+}
+function getInteractionsForStep(stepId) {
+
+    return interactions.filter(i => i.stepId === stepId);
 
 }
