@@ -28,10 +28,10 @@ export default async function handler(req, res) {
         page.properties["Étape liée"]?.relation?.[0]?.id ?? null,
 
       sender:
-        page.properties["Émetteur"]?.relation?.[0]?.id ?? null,
+        page.properties["Émetteur (relation)"]?.relation?.[0]?.id ?? null,
 
       receiver:
-        page.properties["Destinataire"]?.relation?.[0]?.id ?? null,
+        page.properties["Destinataire (relation)"]?.relation?.[0]?.id ?? null,
 
       senderDepartment:
         page.properties["Département émetteur"]?.select?.name ?? "",
