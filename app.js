@@ -377,3 +377,46 @@ function updateInteractions(interactions){
     });
 
 }
+function updateInteractionInspector(interaction){
+
+    const panel = document.getElementById("interaction-details");
+
+    panel.innerHTML = `
+
+        <h3>${interaction.code}</h3>
+
+        <p><strong>${interaction.name}</strong></p>
+
+        <p>
+            <b>Type</b><br>
+            ${interaction.type}
+        </p>
+
+        <p>
+            <b>Objet</b><br>
+            ${interaction.object}
+        </p>
+
+        <p>
+            <b>Déclencheur</b><br>
+            ${interaction.trigger}
+        </p>
+
+        <p>
+            <b>Livrable</b><br>
+            ${interaction.deliverable}
+        </p>
+
+        <p>
+            <b>Risque</b><br>
+            ${interaction.risk}
+        </p>
+
+        <p>
+            <b>Notes</b><br>
+            ${interaction.notes}
+        </p>
+
+    `;
+
+}
