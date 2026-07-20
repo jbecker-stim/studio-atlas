@@ -337,9 +337,6 @@ function updateSelection() {
 
 }
 function updateInteractions(interactions){
-
-    console.log("updateInteractions appelée");
-console.log(interactions);
   
   const container = document.getElementById("interaction-list");
 
