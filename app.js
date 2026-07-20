@@ -338,7 +338,10 @@ function updateSelection() {
 }
 function updateInteractions(interactions){
 
-    const container = document.getElementById("interaction-list");
+    console.log("updateInteractions appelée");
+console.log(interactions);
+  
+  const container = document.getElementById("interaction-list");
 
     container.innerHTML = "";
 
