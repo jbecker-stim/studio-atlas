@@ -349,3 +349,26 @@ function getInteractionsForStep(stepId) {
     return interactions.filter(i => i.stepId === stepId);
 
 }
+function updateInteractions(interactions){
+
+    const container = document.getElementById("interaction-list");
+
+    container.innerHTML = "";
+
+    interactions.forEach(interaction => {
+
+        const card = document.createElement("div");
+
+        card.className = "interaction-card";
+
+        card.innerHTML = `
+            <div class="interaction-code">${interaction.code}</div>
+            <div>${interaction.name}</div>
+            <div class="interaction-type">${interaction.type}</div>
+        `;
+
+        container.appendChild(card);
+
+    });
+
+}
