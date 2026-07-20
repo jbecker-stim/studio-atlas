@@ -336,37 +336,41 @@ function updateSelection() {
         });
 
 }
-function updateInspector(step) {
-
-    document.getElementById("inspector-title").textContent = step.name;
-
-    document.getElementById("phase-value").textContent = step.phase;
-
-    document.getElementById("order-value").textContent = step.order;
-
-}
-function getInteractionsForStep(stepId) {
-
-    return interactions.filter(i => i.stepId === stepId);
-
-}
 function updateInteractions(interactions){
 
     const container = document.getElementById("interaction-list");
 
     container.innerHTML = "";
 
-    interactions.forEach(interaction => {
+    interactions.forEach(interaction=>{
 
-        const card = document.createElement("div");
+        const card=document.createElement("div");
 
-        card.className = "interaction-card";
+        card.className="interaction-card";
 
-        card.innerHTML = `
-            <div class="interaction-code">${interaction.code}</div>
-            <div>${interaction.name}</div>
-            <div class="interaction-type">${interaction.type}</div>
+        card.innerHTML=`
+
+            <div class="interaction-code">
+                ${interaction.code}
+            </div>
+
+            <div>
+                ${interaction.name}
+            </div>
+
+            <div class="interaction-type">
+                ${interaction.type}
+            </div>
+
         `;
+
+        card.onclick = () => {
+
+            selectedInteraction = interaction;
+
+            updateInteractionInspector(interaction);
+
+        };
 
         container.appendChild(card);
 
