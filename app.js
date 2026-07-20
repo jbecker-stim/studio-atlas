@@ -4,6 +4,7 @@
 // ======================================
 let workflow = [];
 let interactions = [];
+let selectedInteraction = null;
 // ---------- Canvas ----------
 
 const svg = d3.select("#atlas");
