@@ -4,3 +4,12 @@
     "@notionhq/client": "^2.2.15"
   }
 }
+{
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@notionhq/client": "^2.2.15"
+  }
+}
