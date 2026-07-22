@@ -1,22 +1,31 @@
 // ======================================
 // STUDIO ATLAS
 // inspector.js
-// Gestion du panneau latéral
+// Sprint 4
 // ======================================
 
 import { state } from "./main.js";
-
-<input
-    id="atlas-search"
-    type="text"
-    placeholder="Rechercher une étape..."
->
+import { getInteractionsForStep } from "./interactions.js";
 
 // ======================================
-// Etape
+// Mise à jour de l'inspector
 // ======================================
 
 export function updateInspector(step){
+
+    updateHeader(step);
+
+    updateBreadcrumb(step);
+
+    updateStatistics(step);
+
+}
+
+// ======================================
+// En-tête
+// ======================================
+
+function updateHeader(step){
 
     setText(
 
@@ -39,6 +48,126 @@ export function updateInspector(step){
         "order-value",
 
         step.order
+
+    );
+
+    const current =
+
+        state.workflow.findIndex(
+
+            s=>s.id===step.id
+
+        )+1;
+
+    setText(
+
+        "step-counter",
+
+        `${current} / ${state.workflow.length}`
+
+    );
+
+}
+
+// ======================================
+// Breadcrumb
+// ======================================
+
+function updateBreadcrumb(step){
+
+    const container =
+
+        document.getElementById(
+
+            "breadcrumb"
+
+        );
+
+    if(!container) return;
+
+    const index =
+
+        state.workflow.findIndex(
+
+            s=>s.id===step.id
+
+        );
+
+    container.innerHTML =
+
+        state.workflow
+
+        .slice(0,index+1)
+
+        .map(s=>s.phase)
+
+        .join(" → ");
+
+}
+
+// ======================================
+// Statistiques
+// ======================================
+
+function updateStatistics(step){
+
+    const interactions =
+
+        getInteractionsForStep(step.id);
+
+    setText(
+
+        "stat-total",
+
+        interactions.length
+
+    );
+
+    const incoming =
+
+        interactions.filter(
+
+            i=>i.receiver
+
+        ).length;
+
+    const outgoing =
+
+        interactions.filter(
+
+            i=>i.sender
+
+        ).length;
+
+    const critical =
+
+        interactions.filter(
+
+            i=>i.critical===true
+
+        ).length;
+
+    setText(
+
+        "stat-in",
+
+        incoming
+
+    );
+
+    setText(
+
+        "stat-out",
+
+        outgoing
+
+    );
+
+    setText(
+
+        "stat-critical",
+
+        critical
 
     );
 
@@ -66,7 +195,7 @@ export function updateInteractionInspector(interaction){
 
             <h3>
 
-                ${interaction.code || ""}
+                ${interaction.code ?? ""}
 
             </h3>
 
@@ -80,7 +209,7 @@ export function updateInteractionInspector(interaction){
 
                 <div>
 
-                    ${interaction.name || "—"}
+                    ${interaction.name ?? "—"}
 
                 </div>
 
@@ -96,7 +225,7 @@ export function updateInteractionInspector(interaction){
 
                 <div>
 
-                    ${interaction.type || "—"}
+                    ${interaction.type ?? "—"}
 
                 </div>
 
@@ -112,7 +241,7 @@ export function updateInteractionInspector(interaction){
 
                 <div>
 
-                    ${interaction.sender || "—"}
+                    ${interaction.sender ?? "—"}
 
                 </div>
 
@@ -128,7 +257,7 @@ export function updateInteractionInspector(interaction){
 
                 <div>
 
-                    ${interaction.receiver || "—"}
+                    ${interaction.receiver ?? "—"}
 
                 </div>
 
@@ -144,7 +273,7 @@ export function updateInteractionInspector(interaction){
 
                 <div>
 
-                    ${interaction.object || "—"}
+                    ${interaction.object ?? "—"}
 
                 </div>
 
@@ -160,7 +289,7 @@ export function updateInteractionInspector(interaction){
 
                 <div>
 
-                    ${interaction.trigger || "—"}
+                    ${interaction.trigger ?? "—"}
 
                 </div>
 
@@ -176,7 +305,7 @@ export function updateInteractionInspector(interaction){
 
                 <div>
 
-                    ${interaction.deliverable || "—"}
+                    ${interaction.deliverable ?? "—"}
 
                 </div>
 
@@ -192,7 +321,7 @@ export function updateInteractionInspector(interaction){
 
                 <div>
 
-                    ${interaction.risk || "—"}
+                    ${interaction.risk ?? "—"}
 
                 </div>
 
@@ -208,7 +337,7 @@ export function updateInteractionInspector(interaction){
 
                 <div>
 
-                    ${interaction.notes || "—"}
+                    ${interaction.notes ?? "—"}
 
                 </div>
 
@@ -250,7 +379,43 @@ export function clearInspector(){
 
     );
 
-    const interactions =
+    setText(
+
+        "step-counter",
+
+        "—"
+
+    );
+
+    const breadcrumb =
+
+        document.getElementById(
+
+            "breadcrumb"
+
+        );
+
+    if(breadcrumb)
+
+        breadcrumb.innerHTML="";
+
+    [
+
+        "stat-total",
+
+        "stat-in",
+
+        "stat-out",
+
+        "stat-critical"
+
+    ].forEach(id=>{
+
+        setText(id,"0");
+
+    });
+
+    const list =
 
         document.getElementById(
 
@@ -258,11 +423,9 @@ export function clearInspector(){
 
         );
 
-    if(interactions){
+    if(list)
 
-        interactions.innerHTML = "";
-
-    }
+        list.innerHTML="";
 
     const details =
 
@@ -272,16 +435,14 @@ export function clearInspector(){
 
         );
 
-    if(details){
+    if(details)
 
-        details.innerHTML = "";
-
-    }
+        details.innerHTML="";
 
 }
 
 // ======================================
-// Helpers
+// Helper
 // ======================================
 
 function setText(id,value){
@@ -290,10 +451,8 @@ function setText(id,value){
 
         document.getElementById(id);
 
-    if(element){
+    if(element)
 
-        element.textContent = value;
-
-    }
+        element.textContent=value;
 
 }
