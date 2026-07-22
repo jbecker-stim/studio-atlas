@@ -1,12 +1,15 @@
 // ======================================
 // STUDIO ATLAS
 // selection.js
-// Gestion de la sélection
+// Sprint 4
 // ======================================
 
 import { state, layers } from "./main.js";
-import { focusStep } from "./camera.js";
-import { updateInspector } from "./inspector.js";
+import { focusStep, resetCamera } from "./camera.js";
+import {
+    updateInspector,
+    clearInspector
+} from "./inspector.js";
 import {
     getInteractionsForStep,
     updateInteractions,
@@ -14,50 +17,33 @@ import {
     drawInteractionGraph
 } from "./interactions.js";
 
-export function searchStep(query){
-
-    query = query.toLowerCase();
-
-    layers.islands
-
-        .selectAll(".island")
-
-        .style("opacity", d=>{
-
-            if(query==="") return 1;
-
-            return d.name
-                .toLowerCase()
-                .includes(query)
-                ?1
-                :.15;
-
-        });
-
-    layers.labels
-
-        .selectAll("text")
-
-        .style("opacity", d=>{
-
-            if(query==="") return 1;
-
-            return d.name
-                .toLowerCase()
-                .includes(query)
-                ?1
-                :.15;
-
-        });
-
-}
 // ======================================
-// Sélection d'une étape
+// Historique
 // ======================================
 
-export function selectStep(step) {
+const history = [];
+
+let historyIndex = -1;
+
+// ======================================
+// Sélection
+// ======================================
+
+export function selectStep(step, addHistory = true) {
+
+    if (!step) return;
 
     state.selectedStep = step;
+
+    if (addHistory) {
+
+        history.splice(historyIndex + 1);
+
+        history.push(step);
+
+        historyIndex = history.length - 1;
+
+    }
 
     focusStep(step);
 
@@ -99,7 +85,7 @@ export function updateSelection() {
 
                 ? 1
 
-                : 0.20;
+                : .20;
 
         });
 
@@ -121,7 +107,7 @@ export function updateSelection() {
 
                 ? 1
 
-                : 0.35;
+                : .25;
 
         });
 
@@ -133,21 +119,16 @@ export function updateSelection() {
 
         .duration(250)
 
-        .attr("transform", d => {
+        .attr("transform", d =>
 
-            if (
+            state.selectedStep &&
+            d.id === state.selectedStep.id
 
-                state.selectedStep &&
+                ? "scale(1.30)"
 
-                d.id === state.selectedStep.id
+                : "scale(1)"
 
-            )
-
-                return "scale(1.30)";
-
-            return "scale(1)";
-
-        });
+        );
 
     layers.islands
 
@@ -157,21 +138,16 @@ export function updateSelection() {
 
         .duration(250)
 
-        .attr("r", d => {
+        .attr("r", d =>
 
-            if (
+            state.selectedStep &&
+            d.id === state.selectedStep.id
 
-                state.selectedStep &&
+                ? 42
 
-                d.id === state.selectedStep.id
+                : 34
 
-            )
-
-                return 42;
-
-            return 34;
-
-        });
+        );
 
 }
 
@@ -185,6 +161,12 @@ export function clearSelection() {
 
     state.selectedInteraction = null;
 
+    clearInteractionGraph();
+
+    clearInspector();
+
+    resetCamera();
+
     layers.islands
 
         .selectAll(".island")
@@ -193,7 +175,7 @@ export function clearSelection() {
 
         .duration(200)
 
-        .style("opacity",1);
+        .style("opacity", 1);
 
     layers.labels
 
@@ -203,7 +185,7 @@ export function clearSelection() {
 
         .duration(200)
 
-        .style("opacity",1);
+        .style("opacity", 1);
 
     layers.islands
 
@@ -213,7 +195,7 @@ export function clearSelection() {
 
         .duration(200)
 
-        .attr("transform","scale(1)");
+        .attr("transform", "scale(1)");
 
     layers.islands
 
@@ -223,22 +205,216 @@ export function clearSelection() {
 
         .duration(200)
 
-        .attr("r",34);
-
-    clearInteractionGraph();
+        .attr("r", 34);
 
 }
 
 // ======================================
-// Navigation clavier
+// Recherche
 // ======================================
 
-window.addEventListener("keydown", event => {
+export function searchStep(query) {
 
-    if (event.key === "Escape") {
+    query = query.trim().toLowerCase();
 
-        clearSelection();
+    if (query === "") {
+
+        updateSelection();
+
+        return;
 
     }
+
+    const results = state.workflow.filter(step =>
+
+        step.name.toLowerCase().includes(query)
+
+    );
+
+    layers.islands
+
+        .selectAll(".island")
+
+        .style("opacity", d =>
+
+            results.some(r => r.id === d.id)
+
+                ? 1
+
+                : .10
+
+        );
+
+    layers.labels
+
+        .selectAll("text")
+
+        .style("opacity", d =>
+
+            results.some(r => r.id === d.id)
+
+                ? 1
+
+                : .10
+
+        );
+
+    if (results.length > 0) {
+
+        focusStep(results[0]);
+
+    }
+
+}
+
+// ======================================
+// Navigation
+// ======================================
+
+export function nextStep() {
+
+    if (!state.selectedStep) return;
+
+    const index = state.workflow.findIndex(
+
+        s => s.id === state.selectedStep.id
+
+    );
+
+    if (index < state.workflow.length - 1) {
+
+        selectStep(
+
+            state.workflow[index + 1]
+
+        );
+
+    }
+
+}
+
+export function previousStep() {
+
+    if (!state.selectedStep) return;
+
+    const index = state.workflow.findIndex(
+
+        s => s.id === state.selectedStep.id
+
+    );
+
+    if (index > 0) {
+
+        selectStep(
+
+            state.workflow[index - 1]
+
+        );
+
+    }
+
+}
+
+// ======================================
+// Historique
+// ======================================
+
+export function backHistory() {
+
+    if (historyIndex <= 0)
+
+        return;
+
+    historyIndex--;
+
+    selectStep(
+
+        history[historyIndex],
+
+        false
+
+    );
+
+}
+
+export function forwardHistory() {
+
+    if (historyIndex >= history.length - 1)
+
+        return;
+
+    historyIndex++;
+
+    selectStep(
+
+        history[historyIndex],
+
+        false
+
+    );
+
+}
+
+// ======================================
+// Clavier
+// ======================================
+
+window.addEventListener("keydown", e => {
+
+    switch (e.key) {
+
+        case "Escape":
+
+            clearSelection();
+
+            break;
+
+        case "ArrowRight":
+
+            nextStep();
+
+            break;
+
+        case "ArrowLeft":
+
+            previousStep();
+
+            break;
+
+    }
+
+    if (e.metaKey && e.key === "ArrowLeft") {
+
+        backHistory();
+
+    }
+
+    if (e.metaKey && e.key === "ArrowRight") {
+
+        forwardHistory();
+
+    }
+
+});
+
+// ======================================
+// Recherche
+// ======================================
+
+window.addEventListener("DOMContentLoaded", () => {
+
+    const input =
+
+        document.getElementById("atlas-search");
+
+    if (!input)
+
+        return;
+
+    input.addEventListener("input", e => {
+
+        searchStep(e.target.value);
+
+    });
 
 });
