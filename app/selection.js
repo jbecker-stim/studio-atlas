@@ -14,6 +14,43 @@ import {
     drawInteractionGraph
 } from "./interactions.js";
 
+export function searchStep(query){
+
+    query = query.toLowerCase();
+
+    layers.islands
+
+        .selectAll(".island")
+
+        .style("opacity", d=>{
+
+            if(query==="") return 1;
+
+            return d.name
+                .toLowerCase()
+                .includes(query)
+                ?1
+                :.15;
+
+        });
+
+    layers.labels
+
+        .selectAll("text")
+
+        .style("opacity", d=>{
+
+            if(query==="") return 1;
+
+            return d.name
+                .toLowerCase()
+                .includes(query)
+                ?1
+                :.15;
+
+        });
+
+}
 // ======================================
 // Sélection d'une étape
 // ======================================
