@@ -6,6 +6,12 @@
 
 import { state } from "./main.js";
 
+<input
+    id="atlas-search"
+    type="text"
+    placeholder="Rechercher une étape..."
+>
+
 // ======================================
 // Etape
 // ======================================
